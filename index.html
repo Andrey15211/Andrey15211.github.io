@@ -1,16 +1,252 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бадалин</title>
+    <title>Портфолио | Бадалин Андрей</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-bottom: 5px solid #FFD700;
+        }
+        
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .avatar i {
+            font-size: 100px;
+            color: #4b6cb7;
+        }
+        
+        .info {
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        
+        .works {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #182848;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            border-radius: 2px;
+        }
+        
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .work-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .work-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .work-content {
+            padding: 25px;
+        }
+        
+        .work-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .work-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #182848;
+        }
+        
+        .work-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(75, 108, 183, 0.3);
+        }
+        
+        .work-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(75, 108, 183, 0.4);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .avatar {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .avatar i {
+                font-size: 80px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-    <h1>Бадалин Андрей, ИС3.1</h1>
-    <img src="">
-    <a href="1.html">Работа 1</a>
-    <a href="1.html">Работа 2</a>
-    <a href="1.html">Работа 3</a>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <div class="avatar">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="info">
+                    <h1>Бадалин Андрей</h1>
+                    <h2>Студент группы ИС3.1</h2>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <section class="works">
+        <div class="container">
+            <h2 class="section-title">Мои работы</h2>
+            
+            <div class="works-grid">
+                <div class="work-card">
+                    <div class="work-content">
+                        <div class="work-number">1</div>
+                        <h3 class="work-title">Работа 1</h3>
+                        <p>Первая учебная работа, демонстрирующая базовые навыки веб-разработки и дизайна.</p>
+                        <a href="1.html" class="work-link">Посмотреть работу</a>
+                    </div>
+                </div>
+                
+                <div class="work-card">
+                    <div class="work-content">
+                        <div class="work-number">2</div>
+                        <h3 class="work-title">Работа 2</h3>
+                        <p>Вторая работа, показывающая прогресс в освоении технологий и более сложные элементы.</p>
+                        <a href="2.html" class="work-link">Посмотреть работу</a>
+                    </div>
+                </div>
+                
+                <div class="work-card">
+                    <div class="work-content">
+                        <div class="work-number">3</div>
+                        <h3 class="work-title">Работа 3</div>
+                        <p>Третья учебная работа, демонстрирующая профессиональный подход к разработке.</p>
+                        <a href="3.html" class="work-link">Посмотреть работу</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Бадалин Андрей | Студент ИС3.1</p>
+        </div>
+    </footer>
 </body>
 </html>
