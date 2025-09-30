@@ -5,9 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бадалин Андрей. ИС 3.1</title>
+    <title>Иванов Иван. ИС 3.1</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
 </head>
 
 
@@ -61,7 +60,7 @@
         <tr>
             <td rowspan="3">1</td>
             <td colspan="4" class="task">
-                2.  Информационное сообщение объемом 3 Кбайта содержит 6144 символа. Сколько сим-волов содержит алфавит, при помощи которого было записано это сообщение?
+                2.  Информационное сообщение объемом 3 Кбайта содержит 6144 символа. Сколько символов содержит алфавит, при помощи которого было записано это сообщение?
             </td>
         </tr>
         <tr>
@@ -86,7 +85,7 @@
     <button onclick="Check()">Проверить</button>
     <div>Правильно:<span id="score"></span></div>
     <p>Разработчики:
-        Бадалин Андрей
+        Иванов Иван, Петров Андрей
     </p>
 
 
@@ -94,39 +93,25 @@
 
 
         function Check() {
+            let answers=['1','2','3'];//массив с ответами
+           
+            let questions=3;
             let score=0;
-            let q1 = document.getElementById('q1');
-            let a1 = document.getElementById('a1');
-            if (a1.value == '1') {
-                q1.style.border = '1px solid green ';
-                score++;
+            for(let i=1;i<=answers.length;i++)//создаем цикл от 1 до длины массива answers. Переменная i-будет счетчиком цикла(1,2,3)
+        {
+            let q = document.getElementById('q'+i);//получаем ссылку на объект table с вопросом
+            let a = document.getElementById('a'+i);//получаем ссылку на объект input с ответом пользователя
+            if (a.value == answers[i-1]) {//если ответ совпадает с правильным ответом
+                q.style.border = '1px solid green ';//окрашиваем табличку с вопросом в зеленый цвет
+                score++;//увеличиваем количество правильных ответов
             }
             else {
-                q1.style.border = '1px solid red';
+                q.style.border = '1px solid red'; //если ответ не совпадает, то окрашиваем табличку в красный цвет
             }
+        }
 
 
-            let q2 = document.getElementById('q2');
-            let a2 = document.getElementById('a2');
-            if (a2.value == '2') {
-                q2.style.border = '1px solid green ';
-                score++;
-            }
-            else {
-                q2.style.border = '1px solid red';
-            }
-
-
-            let q3 = document.getElementById('q3');
-            let a3 = document.getElementById('a3');
-            if (a3.value == '3') {
-                q3.style.border = '1px solid green ';
-                score++;
-            }
-            else {
-                q3.style.border = '1px solid red';
-            }
-            document.getElementById('score').innerHTML=score;
+            document.getElementById('score').innerHTML=score;//находим элемент с id score и меняем его внутреннее содержимое на score
 
 
         }
