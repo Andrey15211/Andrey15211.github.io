@@ -1,0 +1,96 @@
+const projects = [
+  {
+    name: "Угадай число",
+    path: "1.10.25/",
+    description: "Мини-игра на JavaScript для угадывания числа.",
+  },
+  {
+    name: "Тест массивов",
+    path: "Test massive/",
+    description: "Тестирование как работает массив на паре.",
+  },
+  {
+    name: "Пока заглушка",
+    path: "project3/",
+    description: "Описание третьего проекта.",
+  }
+];
+
+// Вывод карточек проектов
+window.onload = function() {
+  const container = document.getElementById('projects-container');
+  projects.forEach((project, idx) => {
+    const card = document.createElement('div');
+    card.className = 'project-link';
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    card.setAttribute('aria-label', project.name);
+
+    // Название
+    const title = document.createElement('h2');
+    title.textContent = project.name;
+    card.appendChild(title);
+
+    // Описание
+    const desc = document.createElement('p');
+    desc.textContent = project.description;
+    card.appendChild(desc);
+
+    // Открытие модального окна
+    card.addEventListener('click', () => openModal(project));
+    card.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') openModal(project);
+    });
+
+    container.appendChild(card);
+  });
+
+  // Тема
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle.addEventListener('click', toggleTheme);
+  updateThemeIcon();
+
+  // Модальное окно
+  document.getElementById('modal-close').onclick = closeModal;
+  document.getElementById('modal').onclick = function(e) {
+    if (e.target === this) closeModal();
+  };
+};
+
+function openModal(project) {
+  document.getElementById('modal-img').src = project.image;
+  document.getElementById('modal-img').alt = project.name;
+  document.getElementById('modal-title').textContent = project.name;
+  document.getElementById('modal-desc').textContent = project.description;
+  document.getElementById('modal-link').href = project.path;
+  document.getElementById('modal-link').textContent = "Открыть проект";
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// Тёмная/светлая тема
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  updateThemeIcon();
+  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+}
+
+function updateThemeIcon() {
+  const themeToggle = document.getElementById('theme-toggle');
+  if (document.body.classList.contains('dark')) {
+    themeToggle.textContent = '☀️';
+  } else {
+    themeToggle.textContent = '🌙';
+  }
+}
+
+// Сохраняем тему между сессиями
+(function() {
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+  }
+})();

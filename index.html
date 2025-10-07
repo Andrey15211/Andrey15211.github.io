@@ -3,23 +3,34 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Проекты Андрея</title>
+    <title>Проекты Бадалина А.Д. ИС 3.1</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header>
-        <h1>Проекты Андрея</h1>
-        <p>Выбери проект, чтобы открыть его</p>
+        <h1>Проекты Бадалина А.Д. ИС3.1</h1>
+        <p>Выберите проект, чтобы открыть его</p>
+        <button id="theme-toggle" aria-label="Переключить тему">🌙</button>
     </header>
 
-    <main id="projects-container">
-        <!-- Проекты будут подгружаться через script.js -->
+    <main>
+        <div class="projects-grid" id="projects-container"></div>
     </main>
 
     <footer>
         <p>© 2025 Андрей | GitHub Pages</p>
     </footer>
 
-    <script src="script.js"></script>
+    <!-- Модальное окно для подробностей -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="modal-close" class="modal-close">&times;</span>
+            <img id="modal-img" src="" alt="" class="modal-img">
+            <h2 id="modal-title"></h2>
+            <p id="modal-desc"></p>
+            <a id="modal-link" href="#" target="_blank" class="modal-link">Открыть проект</a>
+        </div>
+    </div>
 </body>
 </html>
