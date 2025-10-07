@@ -1,251 +1,57 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бадалин А.Д. ИС 3.1</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Портфолио работ Бадалина А.Д.</title>
 </head>
 
 <body>
-    <h1>Тест по информатике</h1>
+    <header>
+        <div class="container">
+            <h1>Портфолио работ</h1>
+            <p class="subtitle">Бадалин Андрей Дмитриевич | Группа ИС 3.1</p>
+        </div>
+    </header>
 
-    <!-- Вопрос 1 -->
-    <table border="1" id="q1">
-        <tr>
-            <td rowspan="3">1</td>
-            <td colspan="4" class="task">
-                Какое из этих устройств является устройством ввода информации в компьютер?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) Монитор</td>
-            <td class="variant">2) Принтер</td>
-            <td class="variant">3) Клавиатура</td>
-            <td class="variant">4) Колонки</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a1" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 2 -->
-    <table border="1" id="q2">
-        <tr>
-            <td rowspan="3">2</td>
-            <td colspan="4" class="task">
-                Как называется набор правил, определяющий представление и обработку данных в компьютере, который используется, например, для хранения текстовых символов?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) Алгоритм</td>
-            <td class="variant">2) Кодек</td>
-            <td class="variant">3) Шифр</td>
-            <td class="variant">4) Кодировка</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a2" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 3 -->
-    <table border="1" id="q3">
-        <tr>
-            <td rowspan="3">3</td>
-            <td colspan="4" class="task">
-                Какой оператор в большинстве языков программирования используется для проверки условия "если-то"?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) Цикл for</td>
-            <td class="variant">2) Оператор if</td>
-            <td class="variant">3) Оператор switch</td>
-            <td class="variant">4) Функция while</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a3" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 4 -->
-    <table border="1" id="q4">
-        <tr>
-            <td rowspan="3">4</td>
-            <td colspan="4" class="task">
-                Что означает аббревиатура "HTML" в контексте веб-разработки?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) HyperText Markup Language</td>
-            <td class="variant">2) High-Level Machine Language</td>
-            <td class="variant">3) Hyper Transfer Markup Language</td>
-            <td class="variant">4) Home Tool Markup Language</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a4" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 5 -->
-    <table border="1" id="q5">
-        <tr>
-            <td rowspan="3">5</td>
-            <td colspan="4" class="task">
-                Как называется модель, где физическое оборудование (серверы, сети) предоставляется как услуга через интернет?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) SaaS</td>
-            <td class="variant">2) IaaS</td>
-            <td class="variant">3) PaaS</td>
-            <td class="variant">4) MaaS</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a5" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 6 -->
-    <table border="1" id="q6">
-        <tr>
-            <td rowspan="3">6</td>
-            <td colspan="4" class="task">
-                Как называется тип переменной в программировании, который может хранить одно из двух значений: «истина» (True) или «ложь» (False)?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) Целочисленный</td>
-            <td class="variant">2) Строковый</td>
-            <td class="variant">3) Булевый</td>
-            <td class="variant">4) Число с плавающей запятой</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a6" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 7 -->
-    <table border="1" id="q7">
-        <tr>
-            <td rowspan="3">7</td>
-            <td colspan="4" class="task">
-                Что из перечисленного является протоколом, обеспечивающим безопасную передачу данных по сети Интернет?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) HTTP</td>
-            <td class="variant">2) FTP</td>
-            <td class="variant">3) HTTPS</td>
-            <td class="variant">4) SMTP</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a7" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 8 -->
-    <table border="1" id="q8">
-        <tr>
-            <td rowspan="3">8</td>
-            <td colspan="4" class="task">
-                Как называется ошибка в программе, которая возникает во время её выполнения (в отличие от ошибки компиляции)?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) Синтаксическая ошибка</td>
-            <td class="variant">2) Логическая ошибка</td>
-            <td class="variant">3) Исключение</td>
-            <td class="variant">4) Опечатка</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a8" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 9 -->
-    <table border="1" id="q9">
-        <tr>
-            <td rowspan="3">9</td>
-            <td colspan="4" class="task">
-                Какая из этих структур данных работает по принципу «первым пришел — первым ушел» (FIFO)?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) Стек</td>
-            <td class="variant">2) Очередь</td>
-            <td class="variant">3) Связный список</td>
-            <td class="variant">4) Дерево</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a9" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <!-- Вопрос 10 -->
-    <table border="1" id="q10">
-        <tr>
-            <td rowspan="3">10</td>
-            <td colspan="4" class="task">
-                Что такое ОЗУ (RAM) в контексте устройства компьютера?
-            </td>
-        </tr>
-        <tr>
-            <td class="variant">1) Постоянное запоминающее устройство</td>
-            <td class="variant">2) Центральный процессор</td>
-            <td class="variant">3) Оперативное запоминающее устройство</td>
-            <td class="variant">4) Устройство для отображения графики</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <input id="a10" type="text" class="answer" placeholder="Введите номер ответа" />
-            </td>
-        </tr>
-    </table>
-
-    <button onclick="Check()">Проверить</button>
-    <div>Правильно: <span id="score">0</span> из 10</div>
-    
-    <p>Разработчики: Дипсиков Вэй, Бадалин Андрей</p>
-
-    <script>
-        function Check() {
-            let score = 0;
-            const correctAnswers = [3, 4, 2, 1, 2, 3, 3, 3, 2, 3];
-            
-            for (let i = 1; i <= 10; i++) {
-                let question = document.getElementById('q' + i);
-                let answer = document.getElementById('a' + i);
+    <div class="container">
+        <section class="menu-section">
+            <h2>Мои работы</h2>
+            <div class="works-grid">
+                <div class="work-card" onclick="showContent('test')">
+                    <h3>Тест по информатике</h3>
+                    <p>Интерактивный тест по основам информатики с проверкой знаний</p>
+                    <div class="date">Опубликовано: 15.10.2023</div>
+                </div>
                 
-                if (answer.value == correctAnswers[i-1]) {
-                    question.style.border = '2px solid green';
-                    score++;
-                } else {
-                    question.style.border = '2px solid red';
-                }
-            }
-            
-            document.getElementById('score').innerHTML = score;
-        }
-    </script>
-</body>
-
-</html>
+                <div class="work-card" onclick="showContent('project1')">
+                    <h3>Веб-приложение "Калькулятор"</h3>
+                    <p>Интерактивный калькулятор с дополнительными функциями</p>
+                    <div class="date">Опубликовано: 05.11.2023</div>
+                </div>
+                
+                <div class="work-card" onclick="showContent('project2')">
+                    <h3>Игра "Угадай число"</h3>
+                    <p>Простая игра с генерацией случайных чисел и подсчетом попыток</p>
+                    <div class="date">Опубликовано: 22.11.2023</div>
+                </div>
+                
+                <div class="work-card" onclick="showContent('project3')">
+                    <h3>Визуализация алгоритмов</h3>
+                    <p>Интерактивная визуализация работы алгоритмов сортировки</p>
+                    <div class="date">Опубликовано: 10.12.2023</div>
+                </div>
+                
+                <div class="work-card" onclick="showContent('project4')">
+                    <h3>Система управления задачами</h3>
+                    <p>Веб-приложение для создания и управления списком задач</p>
+                    <div class="date">Опубликовано: 18.12.2023</div>
+                </div>
+                
+                <div class="work-card" onclick="showContent('project5')">
+                    <h3>Анализатор текста</h3>
+                    <p>Инструмент для анализа текста: подсчет слов, символов и т.д.</p>
+                    <div class="date">Опубликовано: 25.12.2023</div>
+                </div>
+            </div>
+        </section>
