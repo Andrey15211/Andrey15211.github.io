@@ -59,16 +59,16 @@ document.getElementById('jokeBtn').onclick = function() {
     jokeDiv.style.opacity = 1;
 
     setTimeout(() => {
-        // Выбираем случайный анекдот из оставшихся
         const idx = Math.floor(Math.random() * unusedJokes.length);
         const jokeText = unusedJokes[idx];
         jokeDiv.textContent = jokeText;
         jokeDiv.classList.add('show');
-        unusedJokes.splice(idx, 1); // Удаляем показанный анекдот
+        unusedJokes.splice(idx, 1);
     }, 1200);
-    document.getElementById('themeToggle').onclick = function() {
-    document.body.classList.toggle('dark');
-    // Меняем иконку на кнопке
-    this.textContent = document.body.classList.contains('dark') ? '☀️ Светлая тема' : '🌙 Тёмная тема';
 };
+
+// Вынесите обработчик переключения темы сюда!
+document.getElementById('themeToggle').onclick = function() {
+    document.body.classList.toggle('dark');
+    this.textContent = document.body.classList.contains('dark') ? '☀️ Светлая тема' : '🌙 Тёмная тема';
 };
