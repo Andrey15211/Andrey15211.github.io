@@ -20,6 +20,10 @@ function Guess() {
   const inputField = document.getElementById('userInput');
   const userInput = parseInt(inputField.value);
 
+  // Получаем аудиозаписи
+  const correctSound = document.getElementById('correctSound');
+  const wrongSound = document.getElementById('wrongSound');
+
   // Проверка введенного числа
   if (isNaN(userInput) || userInput < 1 || userInput > 100) {
     outputDiv.textContent = "Пожалуйста, введите число от 1 до 100.";
@@ -47,10 +51,13 @@ function Guess() {
   if (userInput === secretNumber) {
     outputDiv.textContent = `Поздравляю! Вы угадали число ${secretNumber} за ${attempts} ${attempts === 1 ? "попытку" : "попытки"}.`;
     inputField.disabled = true;
+    if (correctSound) correctSound.play();
   } else if (userInput < secretNumber) {
     outputDiv.textContent = "Ваше число меньше загаданного.";
+    if (wrongSound) wrongSound.play();
   } else {
     outputDiv.textContent = "Ваше число больше загаданного.";
+    if (wrongSound) wrongSound.play();
   }
 
   if (attempts === maxAttempts) {
