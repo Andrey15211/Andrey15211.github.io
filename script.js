@@ -13,6 +13,16 @@ const projects = [
     name: "Анекдоты",
     path: "Анекдоты/",
     description: "Тестировал возможности встроенного ИИ visual code, вот что пришло в голову.",
+  },
+  {
+    name: "Рисуем",
+    path: "Рисуем/",
+    description: "Работа на паре.",
+  },
+  {
+    name: "Рисовалка на Canvas",
+    path: "Paint/",
+    description: "Более подробное изучение canvas.",
   }
 ];
 
