@@ -1,6 +1,26 @@
+/* === ПЕРЕМЕННЫЕ === */
+:root {
+    --bg-gradient: linear-gradient(120deg, #ffecd2 0%, #fcb69f 100%);
+    --toolbar-bg: rgba(255, 255, 255, 0.6);
+    --toolbar-text: #b721ff;
+    --button-bg: linear-gradient(135deg, #21d4fd, #b721ff);
+    --button-shadow: rgba(33, 212, 253, 0.25);
+    --text-color: #000;
+}
+
+body.dark-mode {
+    --bg-gradient: linear-gradient(120deg, #1f1c2c 0%, #928dab 100%);
+    --toolbar-bg: rgba(40, 40, 60, 0.7);
+    --toolbar-text: #ffd800;
+    --button-bg: linear-gradient(135deg, #6a11cb, #2575fc);
+    --button-shadow: rgba(100, 100, 255, 0.3);
+    --text-color: #fff;
+}
+
 /* === ОСНОВНОЙ ФОН И ТЕКСТ === */
 body {
-    background: linear-gradient(120deg, #ffecd2 0%, #fcb69f 100%);
+    background: var(--bg-gradient);
+    color: var(--text-color);
     font-family: 'Montserrat', Arial, sans-serif;
     text-align: center;
     margin: 0;
@@ -10,6 +30,7 @@ body {
     flex-direction: column;
     align-items: center;
     overflow-x: hidden;
+    transition: background 0.5s, color 0.5s;
 }
 
 /* === ЗАГОЛОВОК === */
@@ -41,16 +62,17 @@ h1 {
     gap: 14px;
     margin-top: 25px;
     padding: 12px 24px;
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--toolbar-bg);
     backdrop-filter: blur(12px);
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    transition: background 0.5s;
 }
 
 label {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #b721ff;
+    color: var(--toolbar-text);
     text-shadow: 0 2px 8px #ffd80044;
 }
 
@@ -68,21 +90,22 @@ button {
     box-shadow: 0 2px 8px rgba(183, 33, 255, 0.1);
 }
 
-input[type="color"]:focus,
-input[type="range"]:focus,
-select:focus {
+body.dark-mode input[type="color"],
+body.dark-mode input[type="range"],
+body.dark-mode select {
+    background: #2a2a3a;
+    color: #fff;
     border-color: #21d4fd;
-    outline: none;
 }
 
 button {
-    background: linear-gradient(135deg, #21d4fd, #b721ff);
+    background: var(--button-bg);
     color: #fff;
     font-weight: 600;
     cursor: pointer;
     border: none;
     padding: 8px 16px;
-    box-shadow: 0 4px 16px rgba(33, 212, 253, 0.25);
+    box-shadow: 0 4px 16px var(--button-shadow);
 }
 
 button:hover {
@@ -101,27 +124,24 @@ button:hover {
     height: 600px;
     box-shadow: 0 10px 40px rgba(44, 62, 80, 0.18);
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.85); /* холст остаётся светлым */
     backdrop-filter: blur(6px);
     overflow: hidden;
 }
 
 #canvas {
     z-index: 1;
+    background: #fff;
+    border-radius: 24px;
 }
 
-canvas:hover {
-    box-shadow: 0 12px 48px rgba(183, 33, 255, 0.18);
-}
-
-/* === ПРОЗРАЧНЫЙ СЛОЙ ПРЕДПРОСМОТРА === */
 #preview {
     position: absolute;
     top: 0;
     left: 0;
-    background: transparent;
     z-index: 2;
-    pointer-events: auto; /* 🔥 Исправлено — теперь клики проходят! */
+    pointer-events: auto;
+    background: transparent;
 }
 
 /* === АДАПТИВНОСТЬ === */
@@ -133,15 +153,11 @@ canvas:hover {
 }
 
 @media (max-width: 600px) {
-    h1 {
-        font-size: 1.7rem;
-    }
+    h1 { font-size: 1.7rem; }
     .toolbar {
         flex-direction: column;
         gap: 10px;
         width: 90%;
     }
-    label {
-        font-size: 1rem;
-    }
+    label { font-size: 1rem; }
 }
