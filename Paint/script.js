@@ -1,4 +1,3 @@
-// === Получаем элементы ===
 const canvas = document.getElementById('canvas');
 const preview = document.getElementById('preview');
 const ctx = canvas.getContext('2d');
@@ -13,23 +12,20 @@ const themeToggle = document.getElementById('themeToggle');
 
 let drawing = false;
 let startX = 0, startY = 0;
-let lastX = 0, lastY = 0;
-
-// === Параметры ===
 let color = colorPicker.value;
 let shape = shapePicker.value;
 let lineWidth = sizePicker.value;
 
 // === Обновление параметров ===
-colorPicker.addEventListener('input', e => color = e.target.value);
-shapePicker.addEventListener('change', e => shape = e.target.value);
-sizePicker.addEventListener('input', e => lineWidth = e.target.value);
+colorPicker.oninput = e => color = e.target.value;
+shapePicker.onchange = e => shape = e.target.value;
+sizePicker.oninput = e => lineWidth = e.target.value;
 
-// === Получение координат ===
-function getCoords(e, target = preview) {
-    const rect = target.getBoundingClientRect();
-    const scaleX = target.width / rect.width;
-    const scaleY = target.height / rect.height;
+// === Получение координат относительно холста ===
+function getCoords(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
     return {
         x: (e.clientX - rect.left) * scaleX,
         y: (e.clientY - rect.top) * scaleY
@@ -37,37 +33,32 @@ function getCoords(e, target = preview) {
 }
 
 // === Начало рисования ===
-preview.addEventListener('mousedown', e => {
+canvas.addEventListener('mousedown', e => {
     drawing = true;
     const { x, y } = getCoords(e);
-    startX = lastX = x;
-    startY = lastY = y;
-    if (shape === 'free') {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-    }
+    startX = x; startY = y;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
 });
 
-// === Рисование и предпросмотр ===
-preview.addEventListener('mousemove', e => {
+// === Рисование ===
+canvas.addEventListener('mousemove', e => {
     if (!drawing) return;
     const { x, y } = getCoords(e);
-
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'round';
+    ctx.lineCap = "round";
+
+    pctx.clearRect(0, 0, preview.width, preview.height);
     pctx.strokeStyle = color;
     pctx.lineWidth = lineWidth;
-    pctx.lineCap = 'round';
+    pctx.lineCap = "round";
 
     if (shape === 'free') {
         ctx.lineTo(x, y);
         ctx.stroke();
-        [lastX, lastY] = [x, y];
     } else {
-        pctx.clearRect(0, 0, preview.width, preview.height);
         pctx.beginPath();
-
         switch (shape) {
             case 'rect':
                 pctx.strokeRect(startX, startY, x - startX, y - startY);
@@ -87,16 +78,15 @@ preview.addEventListener('mousemove', e => {
 });
 
 // === Завершение рисования ===
-preview.addEventListener('mouseup', e => {
+canvas.addEventListener('mouseup', e => {
     if (!drawing) return;
     drawing = false;
     const { x, y } = getCoords(e);
     pctx.clearRect(0, 0, preview.width, preview.height);
 
+    ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
 
     if (shape !== 'free') {
         switch (shape) {
@@ -117,28 +107,34 @@ preview.addEventListener('mouseup', e => {
     }
 });
 
-preview.addEventListener('mouseleave', () => {
+canvas.addEventListener('mouseleave', () => {
     drawing = false;
     pctx.clearRect(0, 0, preview.width, preview.height);
 });
 
-// === Очистка холста ===
-clearBtn.addEventListener('click', () => {
+// === Очистка ===
+clearBtn.onclick = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pctx.clearRect(0, 0, preview.width, preview.height);
-});
+};
 
-// === Сохранение изображения ===
-saveBtn.addEventListener('click', () => {
+// === Сохранение ===
+saveBtn.onclick = () => {
     const link = document.createElement('a');
-    link.download = 'my_drawing.png';
-    link.href = canvas.toDataURL('image/png');
+    link.download = 'drawing.png';
+    link.href = canvas.toDataURL();
     link.click();
-});
+};
 
-// === Переключение темы ===
-let darkMode = localStorage.getItem('darkMode') === 'true';
-if (darkMode) document.body.classList.add('dark-mode');
-themeToggle.textContent = darkMode ? '☀️ Светлая тема' : '🌙 Тёмная тема';
+// === Тёмная тема ===
+let dark = localStorage.getItem('darkMode') === 'true';
+if (dark) {
+    document.body.classList.add('dark-mode');
+    themeToggle.textContent = '☀️ Светлая тема';
+}
 
-themeToggle.addEventListener
+themeToggle.onclick = () => {
+    dark = !dark;
+    document.body.classList.toggle('dark-mode', dark);
+    themeToggle.textContent = dark ? '☀️ Светлая тема' : '🌙 Тёмная тема';
+    localStorage.setItem('darkMode', dark);
+};
