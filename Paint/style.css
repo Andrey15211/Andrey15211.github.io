@@ -1,0 +1,147 @@
+/* === ОСНОВНОЙ ФОН И ТЕКСТ === */
+body {
+    background: linear-gradient(120deg, #ffecd2 0%, #fcb69f 100%);
+    font-family: 'Montserrat', Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* === ЗАГОЛОВОК === */
+h1 {
+    margin-top: 40px;
+    font-size: 2.8rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #ff6a00, #ffd800, #21d4fd, #b721ff, #ff6a00);
+    background-size: 300% auto;
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: rainbowText 3s linear infinite;
+    letter-spacing: 3px;
+    text-shadow: 0 4px 24px rgba(44, 62, 80, 0.12);
+}
+
+@keyframes rainbowText {
+    0% { background-position: 0%; }
+    100% { background-position: 100%; }
+}
+
+/* === ПАНЕЛЬ ИНСТРУМЕНТОВ === */
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-top: 25px;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #b721ff;
+    text-shadow: 0 2px 8px #ffd80044;
+}
+
+/* === ЭЛЕМЕНТЫ УПРАВЛЕНИЯ === */
+input[type="color"],
+input[type="range"],
+select,
+button {
+    border-radius: 10px;
+    border: 2px solid #ffd800;
+    background: #fff;
+    padding: 6px 12px;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(183, 33, 255, 0.1);
+}
+
+input[type="color"]:focus,
+input[type="range"]:focus,
+select:focus {
+    border-color: #21d4fd;
+    outline: none;
+}
+
+button {
+    background: linear-gradient(135deg, #21d4fd, #b721ff);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    padding: 8px 16px;
+    box-shadow: 0 4px 16px rgba(33, 212, 253, 0.25);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(183, 33, 255, 0.35);
+}
+
+/* === ХОЛСТ === */
+.canvas-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto 60px;
+    width: 900px;
+    height: 600px;
+    box-shadow: 0 10px 40px rgba(44, 62, 80, 0.18);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+}
+
+#canvas {
+    z-index: 1;
+}
+
+canvas:hover {
+    box-shadow: 0 12px 48px rgba(183, 33, 255, 0.18);
+}
+
+/* === ПРОЗРАЧНЫЙ СЛОЙ ПРЕДПРОСМОТРА === */
+#preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent;
+    z-index: 2;
+    pointer-events: auto; /* 🔥 Исправлено — теперь клики проходят! */
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 1000px) {
+    .canvas-container {
+        width: 90vw;
+        height: 60vw;
+    }
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 1.7rem;
+    }
+    .toolbar {
+        flex-direction: column;
+        gap: 10px;
+        width: 90%;
+    }
+    label {
+        font-size: 1rem;
+    }
+}
