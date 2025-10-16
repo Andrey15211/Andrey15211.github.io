@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Сайт в интернете — демо</title>
+        <link rel="stylesheet" href="style.css" />
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <header class="header">
+            <img src="icon.svg" alt="Иконка" class="icon" />
+            <div>
+                <h1>Сайт в интернете</h1>
+                <p class="muted">Python + SQLite, запускается на вашем ПК</p>
+            </div>
+        </header>
+
+        <main class="container">
+            <section class="panel">
+                <div class="row">
+                    <span class="muted">Состояние API:</span>
+                    <span id="health" class="badge">—</span>
+                </div>
+                <form id="message-form" class="form">
+                    <label>
+                        <span>Имя</span>
+                        <input id="name" type="text" placeholder="Ваше имя" />
+                    </label>
+                    <label>
+                        <span>Сообщение</span>
+                        <textarea id="text" placeholder="Напишите что-нибудь..." required></textarea>
+                    </label>
+                    <button class="primary" type="submit">Добавить</button>
+                </form>
+            </section>
+
+            <section class="panel">
+                <h2>Сообщения</h2>
+                <ul id="list" class="list"></ul>
+            </section>
+        </main>
+    </body>
+    </html>
+

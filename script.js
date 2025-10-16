@@ -29,6 +29,12 @@ const projects = [
     path: "Проект от ИИ/",
     image: "Проект от ИИ/icon.svg",
     description: "Курсы валют ЦБ РФ с динамическим графиком роста/падения.",
+  },
+  {
+    name: "Сайт в интернете",
+    path: "Сайт в интернете/public/",
+    image: "Сайт в интернете/public/icon.svg",
+    description: "Самостоятельный сайт: Python-сервер + SQLite; ваш ПК — хост.",
   }
 ];
 
