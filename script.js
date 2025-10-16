@@ -23,6 +23,12 @@ const projects = [
     name: "Рисовалка на Canvas",
     path: "Paint/",
     description: "Более подробное изучение canvas.",
+  },
+  {
+    name: "Проект от ИИ: Курсы валют",
+    path: "Проект от ИИ/",
+    image: "Проект от ИИ/icon.svg",
+    description: "Курсы валют ЦБ РФ с динамическим графиком роста/падения.",
   }
 ];
 
