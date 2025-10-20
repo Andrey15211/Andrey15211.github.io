@@ -62,3 +62,52 @@ textarea { min-height: 90px; resize: vertical; }
 .list li { background: #0b1030; border: 1px solid #27305a; border-radius: 10px; padding: 10px 12px; }
 .meta { color: var(--muted); font-size: 12px; }
 
+/* GitHub repos */
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.repo-card {
+    background: #0b1030;
+    border: 1px solid #27305a;
+    border-radius: 10px;
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+}
+
+.repo-card h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.repo-desc {
+    color: var(--muted);
+    font-size: 13px;
+    min-height: 34px;
+}
+
+.repo-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.repo-links {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    background: #0d1130;
+    color: var(--text);
+    border: 1px solid #2a3360;
+    border-radius: 8px;
+    padding: 6px 10px;
+    text-decoration: none;
+}
