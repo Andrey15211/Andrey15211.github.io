@@ -134,7 +134,7 @@ class AppHandler(SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(rows).encode("utf-8"))
             return
 
-        if parsed.path.startswith("/api/projects"):
+        if parsed.path == "/api/projects" or parsed.path == "/api/projects/":
             with DB_LOCK, sqlite3.connect(DB_PATH) as con:
                 con.row_factory = sqlite3.Row
                 cur = con.execute(
@@ -173,7 +173,7 @@ class AppHandler(SimpleHTTPRequestHandler):
                 con.commit()
             return self._send_json(HTTPStatus.CREATED, {"ok": True})
 
-        if parsed.path.startswith("/api/projects"):
+        if parsed.path == "/api/projects":
             title = (data.get("title") or "").strip()[:150]
             username = (data.get("username") or "").strip()[:100]
             fullname = (data.get("fullname") or "").strip()[:150]
@@ -323,4 +323,5 @@ def run():
 
 if __name__ == "__main__":
     run()
+
 
