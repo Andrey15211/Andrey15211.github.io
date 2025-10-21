@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Роман Трембач - Персональный сайт</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --text: #333;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            margin: 20px auto;
+            display: block;
+            box-shadow: var(--shadow);
+            background: linear-gradient(45deg, #3498db, #2c3e50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 i {
+            margin-right: 10px;
+        }
+        
+        .work-link {
+            display: block;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 20px 0;
+            transition: var(--transition);
+            font-weight: bold;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .work-link:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .skill {
+            background: var(--light);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .contact-list {
+            list-style: none;
+        }
+        
+        .contact-list li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-list i {
+            width: 30px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-5px);
+            background: var(--secondary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            background: var(--dark);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            width: 100%;
+        }
+        
+        .highlight {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .quote {
+            font-style: italic;
+            margin: 20px 0;
+            padding: 20px;
+            background: var(--light);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .decorative-element {
+            height: 4px;
+            width: 80px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            margin: 20px 0;
+            border-radius: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .profile-img {
+                width: 150px;
+                height: 150px;
+                font-size: 3rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <h1>Роман Трембач</h1>
+            <p class="subtitle">Веб-разработчик и дизайнер</p>
+            <div class="profile-img">
+                <span>РТ</span>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="card">
+                <h2><i class="fas fa-user"></i> Обо мне</h2>
+                <p>Привет! Меня зовут Роман Трембач. Я занимаюсь веб-разработкой и дизайном. Мой подход сочетает в себе творчество и техническое мастерство для создания впечатляющих цифровых решений.</p>
+                
+                <div class="decorative-element"></div>
+                
+                <div class="quote">
+                    "Создавать не просто функциональные, но и красивые продукты — вот что меня вдохновляет"
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-graduation-cap"></i> Образование</h2>
+                <p><span class="highlight">Магистр компьютерных наук</span><br>
+                Национальный технический университет, 2018-2020</p>
+                
+                <p><span class="highlight">Бакалавр веб-разработки</span><br>
+                Университет информационных технологий, 2014-2018</p>
+                
+                <div class="decorative-element"></div>
+                
+                <h2><i class="fas fa-star"></i> Навыки</h2>
+                <div class="skills">
+                    <span class="skill">HTML/CSS</span>
+                    <span class="skill">JavaScript</span>
+                    <span class="skill">React</span>
+                    <span class="skill">UI/UX дизайн</span>
+                    <span class="skill">Адаптивная верстка</span>
+                    <span class="skill">Node.js</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-briefcase"></i> Мои работы</h2>
+                <p>Здесь представлены некоторые из моих проектов. Нажмите на ссылку ниже, чтобы посмотреть первую работу.</p>
+                
+                <a href="1.html" class="work-link">
+                    <i class="fas fa-external-link-alt"></i> Посмотреть работу 1
+                </a>
+                
+                <p>Скоро здесь появятся другие мои проекты:</p>
+                <ul>
+                    <li>Корпоративный сайт для технологической компании</li>
+                    <li>Интернет-магазин современной мебели</li>
+                    <li>Мобильное приложение для здоровья</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-address-book"></i> Контакты</h2>
+                <p>Вы можете связаться со мной любым удобным способом:</p>
+                
+                <ul class="contact-list">
+                    <li><i class="fas fa-envelope"></i> roman.trembach@example.com</li>
+                    <li><i class="fas fa-phone"></i> 7 997 447 77 77</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Москва, Россия</li>
+                </ul>
+                
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2023 Роман Трембач. Все права защищены.</p>
+            <p>Сайт разработан с использованием HTML5 и CSS3</p>
+        </div>
+    </footer>
+</body>
+</html>
