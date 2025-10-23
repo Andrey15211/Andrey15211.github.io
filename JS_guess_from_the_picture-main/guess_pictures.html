@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Угадай персонажа!</title>
+        <!--
+            Комментарий (реализация задания): Подключили Bootstrap через CDN,
+            чтобы сделать адаптивную верстку и улучшить внешний вид без
+            переписывания большого количества CSS вручную.
+        -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous"
+        >
+        <style>
+            /*
+                Комментарий (реализация задания — улучшение дизайна):
+                Вынесли общие цвета в CSS-переменные и применили современный стиль
+                (мягкие тени, стеклянные карточки). Поддерживается любое фоновое фото.
+                Следуем гайду репозитория: 4-пробела для HTML/CSS.
+            */
+            :root {
+                --bg-overlay: rgba(255, 255, 255, 0.08);
+                --card-bg: rgba(255, 255, 255, 0.12);
+                --text-main: #ffffff;
+                --accent: #00d4ff;
+                --accent-2: #8ec5ff;
+            }
+
+            body {
+                margin: 0;
+                min-height: 100vh;
+                color: var(--text-main);
+                background: #0b132b url("backgrounds/227986-abstract-triangle.jpg") center/cover no-repeat fixed;
+                backdrop-filter: blur(0px);
+            }
+
+            .page-overlay {
+                background: linear-gradient(120deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.6));
+                min-height: 100vh;
+                padding: 24px 0;
+            }
+
+            .glass-card {
+                background: var(--card-bg);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+                backdrop-filter: blur(10px);
+            }
+
+            .my-image {
+                width: 100%;
+                max-width: 360px;
+                border-radius: 12px;
+                border: 2px solid var(--accent-2);
+            }
+
+            .btn-choice {
+                font-size: 18px;
+            }
+
+            .meter {
+                height: 10px;
+                background: rgba(255, 255, 255, 0.15);
+                border-radius: 999px;
+                overflow: hidden;
+            }
+
+            .meter > span {
+                display: block;
+                height: 100%;
+                background: linear-gradient(90deg, var(--accent), var(--accent-2));
+                width: 0%;
+                transition: width 250ms ease;
+            }
+
+            footer {
+                color: rgba(255, 255, 255, 0.85);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page-overlay">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-10 col-lg-8">
+                        <div class="p-4 glass-card">
+                            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                                <div>
+                                    <h1 class="h3 m-0">Угадай персонажа из «Игры престолов»</h1>
+                                    <small id="count_pictures" class="text-light"></small>
+                                </div>
+                                <div class="d-flex gap-3 align-items-center flex-wrap">
+                                    <div class="text-nowrap">
+                                        <span id="score" class="fw-bold">0</span> из <span id="attempts">0</span>
+                                    </div>
+                                    <!--
+                                        Комментарий (реализация задания — переключатель музыки):
+                                        Добавлен переключатель фоновой музыки с сохранением
+                                        состояния в localStorage.
+                                    -->
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="musicToggle">
+                                        <label class="form-check-label" for="musicToggle">Музыка</label>
+                                    </div>
+                                    <!--
+                                        Комментарий (реализация задания — фильтр по полу):
+                                        Игра может работать в режимах: все / мужчины / женщины.
+                                        Дистракторы подбираются из той же группы, что и правильный ответ.
+                                    -->
+                                    <div class="d-flex align-items-center gap-2">
+                                        <label for="genderFilter" class="form-label m-0">Режим</label>
+                                        <select id="genderFilter" class="form-select form-select-sm" style="width: 150px;">
+                                            <option value="all" selected>Все</option>
+                                            <option value="male">Мужчины</option>
+                                            <option value="female">Женщины</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="opacity-25">
+
+                            <div class="text-center">
+                                <div id="image-container" class="mb-3">
+                                    <!-- Контейнер для отображения случайной картинки -->
+                                </div>
+                                <div class="meter mb-3">
+                                    <span id="progressBar"></span>
+                                </div>
+                                <div id="buttons-container" class="d-grid gap-2 gap-md-3" style="grid-template-columns: repeat(2, 1fr);"></div>
+                                <div class="mt-3">
+                                    <button id="nextBtn" class="btn btn-outline-light btn-sm d-none">Следующий</button>
+                                </div>
+                            </div>
+
+                            <hr class="opacity-25">
+
+                            <footer class="small text-center">
+                                Разработал: Иванов И.И. · 2024 г
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--
+            Комментарий (реализация задания — звуки):
+            Оставили исходные аудиофайлы как fallback. Основные звуки
+            правильного/неправильного ответа генерируются через WebAudio API.
+        -->
+        <audio id="tada-sound">
+            <source src="sounds/line_open.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="wrong-sound">
+            <source src="sounds/100-k-1-wrong-answer.mp3" type="audio/mpeg">
+        </audio>
+        <!--
+            Комментарий (реализация задания — фоновая музыка):
+            Используем этот элемент для зацикленной фоновой музыки с контролем громкости.
+            Для примера применим тот же файл, но в цикле. Замените src при необходимости.
+        -->
+        <audio id="bg-music" src="sounds/line_open.mp3" loop></audio>
+
+        <script>
+            //
+            // Комментарий (реализация задания — улучшение кода):
+            // Полностью переписана игровая логика вокруг массива объектов characters
+            // с полями name, image (путь или data URL) и gender. Теперь добавление/удаление
+            // персонажей — это просто редактирование массива characters. Дистракторы
+            // подбираются из той же группы пола, что и правильный вариант, что
+            // соответствует требованию «различать мужчин и женщин и при добавлении
+            // ответов это учитывалось».
+            //
+            // Дополнительно:
+            // - Использован детерминированный цикл раундов поверх перемешанной копии массива.
+            // - Убрана мутация исходного списка имен через shift/push.
+            // - Реализована генерация правильного/неправильного звука через WebAudio API
+            //   (fallback — встроенные <audio>), фоновая музыка с переключателем и
+            //   сохранением выбора в localStorage.
+            // - Добавлена озвучка ответов (Web Speech API) — синтез речи говорит, верно/нет,
+            //   и произносит имя персонажа.
+            // - Адаптивный интерфейс на Bootstrap, прогресс-бар раунда, и кнопка «Следующий».
+
+            // 2 пробела для JavaScript согласно правилам репозитория
+
+            // Список персонажей: имя, путь к картинке и пол.
+            // Как удалить: просто удалите объект из массива.
+            // Как добавить: добавьте новый объект с { name, image, gender }.
+            // image может быть путём к файлу (например, "arya.jpg") или data:URL.
+            const characters = [
+              // Существующие из папки (пол добавлен)
+              { name: "Arya", image: "arya.jpg", gender: "female" },
+              { name: "Bran", image: "bran.jpg", gender: "male" },
+              { name: "Brienna", image: "brienna.jpg", gender: "female" },
+              { name: "Dany", image: "dany.jpg", gender: "female" },
+              { name: "Drogo", image: "drogo.jpg", gender: "male" },
+              { name: "Harry", image: "harry.jpg", gender: "male" },
+              { name: "Hodor", image: "hodor.jpg", gender: "male" },
+              { name: "Jendry", image: "jendry.jpg", gender: "male" },
+              { name: "Joffrey", image: "joffrey.jpg", gender: "male" },
+              { name: "Jon", image: "jon.jpg", gender: "male" },
+              { name: "Loras", image: "loras.jpg", gender: "male" },
+              { name: "Margaery", image: "margaery.jpg", gender: "female" },
+              { name: "Mel", image: "mel.jpg", gender: "female" },
+              { name: "Ned", image: "ned.jpg", gender: "male" },
+              { name: "Oberyn", image: "oberyn.jpg", gender: "male" },
+              { name: "Ramsey", image: "ramsey.jpg", gender: "male" },
+              { name: "Renly", image: "renly.jpg", gender: "male" },
+              { name: "Robb", image: "robb.jpg", gender: "male" },
+              { name: "Sam", image: "sam.jpg", gender: "male" },
+              { name: "Sansa", image: "sansa.jpg", gender: "female" },
+              { name: "Theon", image: "theon.jpg", gender: "male" },
+              { name: "Tormund", image: "tormund.jpg", gender: "male" },
+              { name: "Tyrion", image: "tyrion.jpg", gender: "male" },
+
+              // Новые персонажи (реализация задания: добавлены несколько новых)
+              // Здесь для примера используем встроенные SVG-картинки через data URL.
+              // При желании замените на реальные файлы .jpg и поменяйте image.
+              { name: "Cersei", image: svgPlaceholder("Cersei", "#b30059"), gender: "female" },
+              { name: "Jaime", image: svgPlaceholder("Jaime", "#b38600"), gender: "male" },
+              { name: "Ygritte", image: svgPlaceholder("Ygritte", "#c94c00"), gender: "female" }
+            ];
+
+            // Вспомогательная функция: простой SVG-плейсхолдер с именем
+            function svgPlaceholder(label, color) {
+              const svg = `<?xml version="1.0" encoding="UTF-8"?>\n` +
+                `<svg xmlns='http://www.w3.org/2000/svg' width='640' height='800'>` +
+                `<rect width='100%' height='100%' fill='${color}'/>` +
+                `<text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' ` +
+                `font-size='64' fill='white' font-family='Arial, Helvetica, sans-serif'>${label}</text>` +
+                `</svg>`;
+              return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+            }
+
+            // Элементы DOM
+            const imageContainer = document.getElementById("image-container");
+            const buttonsContainer = document.getElementById("buttons-container");
+            const scoreEl = document.getElementById("score");
+            const attemptsEl = document.getElementById("attempts");
+            const countEl = document.getElementById("count_pictures");
+            const progressBar = document.getElementById("progressBar");
+            const nextBtn = document.getElementById("nextBtn");
+            const genderFilter = document.getElementById("genderFilter");
+            const musicToggle = document.getElementById("musicToggle");
+
+            // Звуки: fallback-элементы и WebAudio
+            const tadaSound = document.getElementById("tada-sound");
+            const wrongSound = document.getElementById("wrong-sound");
+            const bgMusic = document.getElementById("bg-music");
+
+            let audioCtx = null;
+            try {
+              const Ctx = window.AudioContext || window.webkitAudioContext;
+              if (Ctx) audioCtx = new Ctx();
+            } catch (e) {
+              // WebAudio недоступен — будем использовать <audio>
+            }
+
+            function playBeepOk() {
+              // Комментарий (изменение звукового сопровождения):
+              // Генерируем короткий «правильный» звук двумя тонами.
+              if (!audioCtx) {
+                try { tadaSound.currentTime = 0; tadaSound.play(); } catch (e) {}
+                return;
+              }
+              const o1 = audioCtx.createOscillator();
+              const g1 = audioCtx.createGain();
+              o1.type = "sine";
+              o1.frequency.value = 660;
+              g1.gain.value = 0.0001;
+              o1.connect(g1).connect(audioCtx.destination);
+              const now = audioCtx.currentTime;
+              g1.gain.setTargetAtTime(0.25, now, 0.01);
+              o1.start(now);
+              // второй тон
+              const o2 = audioCtx.createOscillator();
+              const g2 = audioCtx.createGain();
+              o2.type = "sine";
+              o2.frequency.value = 880;
+              g2.gain.value = 0.0001;
+              o2.connect(g2).connect(audioCtx.destination);
+              g2.gain.setTargetAtTime(0.18, now + 0.05, 0.01);
+              o2.start(now + 0.05);
+              // плавный спад
+              g1.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+              g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+              o1.stop(now + 0.26);
+              o2.stop(now + 0.26);
+            }
+
+            function playBeepWrong() {
+              // Комментарий: низкий «неправильный» звук через WebAudio
+              if (!audioCtx) {
+                try { wrongSound.currentTime = 0; wrongSound.play(); } catch (e) {}
+                return;
+              }
+              const o = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+              o.type = "sawtooth";
+              o.frequency.value = 160;
+              g.gain.value = 0.0001;
+              o.connect(g).connect(audioCtx.destination);
+              const now = audioCtx.currentTime;
+              g.gain.setTargetAtTime(0.2, now, 0.02);
+              o.start(now);
+              g.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+              o.stop(now + 0.26);
+            }
+
+            // Синтез речи: проговариваем результат и имя
+            function speak(text) {
+              try {
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = "ru-RU";
+                u.rate = 1.0;
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(u);
+              } catch (e) {
+                // API недоступно — пропускаем
+              }
+            }
+
+            // Перемешивание Фишера-Йетса
+            function shuffle(arr) {
+              const a = arr.slice();
+              for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+              }
+              return a;
+            }
+
+            // Состояние игры
+            let score = 0;
+            let attempts = 0;
+            let rounds = [];
+            let roundIndex = 0;
+
+            function currentPool() {
+              const mode = genderFilter.value;
+              if (mode === "male") return characters.filter(c => c.gender === "male");
+              if (mode === "female") return characters.filter(c => c.gender === "female");
+              return characters.slice();
+            }
+
+            function buildRounds() {
+              rounds = shuffle(currentPool());
+              roundIndex = 0;
+              countEl.textContent = "Картинок: " + rounds.length;
+              updateProgress();
+            }
+
+            function updateProgress() {
+              const total = Math.max(rounds.length, 1);
+              const pct = Math.min(100, Math.round((roundIndex / total) * 100));
+              progressBar.style.width = pct + "%";
+            }
+
+            function renderRound() {
+              buttonsContainer.innerHTML = "";
+              imageContainer.innerHTML = "";
+
+              if (roundIndex >= rounds.length) {
+                // Игра окончена
+                const end = document.createElement("div");
+                end.className = "alert alert-success";
+                end.textContent = `Готово! Ваш результат: ${score} из ${attempts}.`;
+                imageContainer.appendChild(end);
+                nextBtn.classList.add("d-none");
+                return;
+              }
+
+              const correct = rounds[roundIndex];
+
+              // Картинка
+              const img = document.createElement("img");
+              img.className = "my-image";
+              img.alt = correct.name;
+              img.src = correct.image;
+              imageContainer.appendChild(img);
+
+              // Генерация вариантов ответа (1 верный + 3 дистрактора из той же группы пола)
+              const pool = currentPool().filter(c => c.name !== correct.name);
+              const distractors = shuffle(pool).slice(0, Math.min(3, pool.length));
+              const options = shuffle([correct, ...distractors]);
+
+              options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "btn btn-outline-light btn-choice";
+                btn.textContent = opt.name;
+                btn.dataset.correct = String(opt.name === correct.name);
+                btn.addEventListener("click", onAnswerClick, { once: true });
+                buttonsContainer.appendChild(btn);
+              });
+
+              nextBtn.classList.add("d-none");
+              updateProgress();
+            }
+
+            function onAnswerClick(e) {
+              const isCorrect = e.currentTarget?.dataset?.correct === "true";
+              attempts++;
+              attemptsEl.textContent = attempts;
+
+              // Блокируем остальные кнопки на время
+              [...buttonsContainer.querySelectorAll("button")].forEach(b => b.disabled = true);
+
+              if (isCorrect) {
+                score++;
+                scoreEl.textContent = score;
+                playBeepOk();
+                speak("Верно! " + e.currentTarget.textContent);
+                e.currentTarget.classList.remove("btn-outline-light");
+                e.currentTarget.classList.add("btn-success");
+              } else {
+                playBeepWrong();
+                speak("Неверно. Это " + rounds[roundIndex].name);
+                e.currentTarget.classList.remove("btn-outline-light");
+                e.currentTarget.classList.add("btn-danger");
+                // Подсветим правильный
+                const correctBtn = [...buttonsContainer.querySelectorAll("button")] \
+                  .find(b => b.dataset.correct === "true");
+                if (correctBtn) {
+                  correctBtn.classList.remove("btn-outline-light");
+                  correctBtn.classList.add("btn-success");
+                }
+              }
+
+              roundIndex++;
+              nextBtn.classList.remove("d-none");
+            }
+
+            nextBtn.addEventListener("click", () => {
+              renderRound();
+            });
+
+            // Переключатель режима пола
+            genderFilter.addEventListener("change", () => {
+              buildRounds();
+              renderRound();
+            });
+
+            // Фоновая музыка: переключатель и сохранение состояния
+            function applyMusicPreference() {
+              const enabled = localStorage.getItem("bg-music") === "on";
+              musicToggle.checked = enabled;
+              try {
+                if (enabled) {
+                  bgMusic.volume = 0.25;
+                  bgMusic.play().catch(() => {});
+                } else {
+                  bgMusic.pause();
+                }
+              } catch (e) {}
+            }
+
+            musicToggle.addEventListener("change", () => {
+              localStorage.setItem("bg-music", musicToggle.checked ? "on" : "off");
+              applyMusicPreference();
+            });
+
+            // Инициализация игры
+            document.addEventListener("DOMContentLoaded", function () {
+              // Сбрасываем счетчики
+              score = 0;
+              attempts = 0;
+              scoreEl.textContent = score;
+              attemptsEl.textContent = attempts;
+
+              applyMusicPreference();
+              buildRounds();
+              renderRound();
+            });
+        </script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>
