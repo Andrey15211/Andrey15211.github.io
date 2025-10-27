@@ -52,6 +52,7 @@ function bindUi() {
     if (e.key === "Escape") {
       closeViewer();
       closeAddModal();
+      
     }
   });
 }
@@ -64,6 +65,8 @@ function updateAdminUi(redraw = true) {
   document.body.classList.toggle("is-admin", isAdmin());
   const btn = $("#admin-btn");
   if (btn) btn.textContent = isAdmin() ? "Выйти из админ режима" : "Войти как админ";
+  // Кнопка загрузки доступна всем
+  // Кнопка загрузки архивов удалена
   if (redraw) {
     renderMessages();
     renderProjects();
@@ -310,7 +313,8 @@ function applyRepoInfo(card, project) {
 
 function getRepoInfo(project) {
   const parsed = parseRepoUrl(project.repo_url);
-  if (!parsed) return undefined;
+  // Если ссылка не на GitHub — метаданных нет и не будет
+  if (!parsed) return null;
   const key = `${parsed.owner}/${parsed.repo}`.toLowerCase();
   if (!state.repoInfo.has(key)) return undefined;
   return state.repoInfo.get(key);
@@ -325,12 +329,19 @@ async function ensureRepoInfo(project) {
     const res = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}`, {
       headers: window.GH_TOKEN ? { Authorization: `Bearer ${window.GH_TOKEN}` } : {}
     });
-    if (!res.ok) throw new Error("GitHub HTTP " + res.status);
+    // Тихо обрабатываем распространённые случаи: 404 (нет репо/приватный) и 403 (rate-limit)
+    if (!res.ok) {
+      if (res.status === 404 || res.status === 403) {
+        state.repoInfo.set(key, null);
+        return null;
+      }
+      throw new Error("GitHub HTTP " + res.status);
+    }
     const info = await res.json();
     state.repoInfo.set(key, info);
     return info;
   } catch (e) {
-    console.warn("Не удалось загрузить данные репозитория", e);
+    // Не шумим в консоли на сетевых ошибках/ограничениях — просто скрываем метаданные
     state.repoInfo.set(key, null);
     return null;
   }
@@ -400,6 +411,8 @@ function closeAddModal() {
   const modal = $("#add-modal");
   if (modal) modal.hidden = true;
 }
+
+// Загрузка архивов отключена
 
 async function onProjectSubmit(ev) {
   ev.preventDefault();

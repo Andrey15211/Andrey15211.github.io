@@ -6,13 +6,16 @@ import threading
 from datetime import datetime
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+import posixpath
+from urllib.parse import urlparse, unquote
 import re
-from urllib.parse import urlparse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PUBLIC_DIR = os.path.join(BASE_DIR, "public")
 DB_PATH = os.path.join(BASE_DIR, "site.db")
 ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN", "admin123")
+MAX_BODY_MB = int(os.environ.get("MAX_BODY_MB", "25"))  # лимит тела запроса (для JSON)
+MAX_BODY_BYTES = MAX_BODY_MB * 1024 * 1024
 
 
 def init_db():
@@ -43,6 +46,7 @@ def init_db():
         con.commit()
     finally:
         con.close()
+    # только база и public, без каталога загрузок
 
 
 DB_LOCK = threading.Lock()
@@ -77,7 +81,7 @@ class AppHandler(SimpleHTTPRequestHandler):
         return True
 
     def do_OPTIONS(self):
-        if self.path.startswith("/api/"):
+        if self.path.startswith("/api/") or "/upload" in self.path:
             self.send_response(HTTPStatus.NO_CONTENT)
             self._set_cors()
             self.end_headers()
@@ -88,8 +92,15 @@ class AppHandler(SimpleHTTPRequestHandler):
         if self.path.startswith("/api/"):
             self.handle_api_get()
             return
-        # Статика
-        super().do_GET()
+        # Отдаём статику из public через базовый обработчик
+        return super().do_GET()
+
+    def do_HEAD(self):
+        # HEAD-запросы к API: отвечаем как 200/404 без тела, чтобы проверки типа curl -I работали
+        if self.path.startswith("/api/"):
+            self.handle_api_head()
+            return
+        return super().do_HEAD()
 
     def do_POST(self):
         if self.path.startswith("/api/"):
@@ -112,7 +123,7 @@ class AppHandler(SimpleHTTPRequestHandler):
     # ---- API ----
     def handle_api_get(self):
         parsed = urlparse(self.path)
-        if parsed.path == "/api/health":
+        if parsed.path.rstrip("/") == "/api/health":
             self.send_response(HTTPStatus.OK)
             self._set_cors()
             self.send_header("Content-Type", "application/json; charset=utf-8")
@@ -120,7 +131,7 @@ class AppHandler(SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps({"status": "ok"}).encode("utf-8"))
             return
 
-        if parsed.path == "/api/messages":
+        if parsed.path.rstrip("/") == "/api/messages":
             with DB_LOCK, sqlite3.connect(DB_PATH) as con:
                 con.row_factory = sqlite3.Row
                 cur = con.execute(
@@ -134,7 +145,7 @@ class AppHandler(SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(rows).encode("utf-8"))
             return
 
-        if parsed.path.startswith("/api/projects"):
+        if parsed.path.rstrip("/").startswith("/api/projects"):
             with DB_LOCK, sqlite3.connect(DB_PATH) as con:
                 con.row_factory = sqlite3.Row
                 cur = con.execute(
@@ -152,14 +163,19 @@ class AppHandler(SimpleHTTPRequestHandler):
 
     def handle_api_post(self):
         parsed = urlparse(self.path)
-        length = int(self.headers.get("Content-Length", "0") or 0)
-        body = self.rfile.read(length) if length > 0 else b"{}"
+        normalized = parsed.path.rstrip("/")
         try:
-            data = json.loads(body.decode("utf-8"))
+            body = self._read_body()
+        except ValueError as e:
+            return self._send_json(HTTPStatus.BAD_REQUEST, {"error": str(e)})
+        ctype = self.headers.get("Content-Type", "")
+        data = {}
+        try:
+            data = json.loads(body.decode("utf-8")) if body else {}
         except Exception:
             data = {}
 
-        if parsed.path == "/api/messages":
+        if normalized == "/api/messages":
             name = (data.get("name") or "Гость").strip()[:100]
             text = (data.get("text") or "").strip()[:2000]
             if not text:
@@ -173,7 +189,7 @@ class AppHandler(SimpleHTTPRequestHandler):
                 con.commit()
             return self._send_json(HTTPStatus.CREATED, {"ok": True})
 
-        if parsed.path.startswith("/api/projects"):
+        if normalized.startswith("/api/projects"):
             title = (data.get("title") or "").strip()[:150]
             username = (data.get("username") or "").strip()[:100]
             fullname = (data.get("fullname") or "").strip()[:150]
@@ -208,6 +224,25 @@ class AppHandler(SimpleHTTPRequestHandler):
                 }
             })
 
+        self.send_error(HTTPStatus.NOT_FOUND, "Unknown API endpoint")
+
+    def handle_api_head(self):
+        parsed = urlparse(self.path)
+        # Для HEAD возвращаем только статус и заголовки, без тела
+        if parsed.path.rstrip("/") in ("/api/health", "/api/messages"):
+            self.send_response(HTTPStatus.OK)
+            self._set_cors()
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+        if parsed.path.rstrip("/").startswith("/api/projects"):
+            self.send_response(HTTPStatus.OK)
+            self._set_cors()
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
         self.send_error(HTTPStatus.NOT_FOUND, "Unknown API endpoint")
 
     def handle_api_put(self):
@@ -304,6 +339,97 @@ class AppHandler(SimpleHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.end_headers()
         self.wfile.write(json.dumps(payload).encode("utf-8"))
+
+    # -------- Helpers: body reading ---------
+    def _read_body(self) -> bytes:
+        """Прочитать тело запроса. Поддерживает Content-Length и chunked.
+        Бросает ValueError при превышении лимита или ошибке формата.
+        """
+        # Размер известен
+        cl = self.headers.get("Content-Length")
+        if cl:
+            try:
+                length = int(cl)
+            except Exception:
+                length = 0
+            if length < 0:
+                length = 0
+            if length > MAX_BODY_BYTES:
+                raise ValueError(f"Тело слишком большое (> {MAX_BODY_MB} MB)")
+            return self.rfile.read(length) if length > 0 else b""
+
+        # Chunked
+        te = (self.headers.get("Transfer-Encoding", "").lower())
+        if "chunked" in te:
+            return self._read_chunked()
+
+        # Ничего не указано — читаем пустое тело
+        return b""
+
+    def _read_chunked(self) -> bytes:
+        total = 0
+        out = bytearray()
+        # Читаем размер чанка в hex до CRLF, затем сами данные и CRLF
+        while True:
+            line = self.rfile.readline()
+            if not line:
+                raise ValueError("Неверный формат chunked тела")
+            # иногда размер приходит с доп. параметрами: '1A;ext=foo' — обрежем по ';'
+            try:
+                size_str = line.split(b";", 1)[0].strip()
+                chunk_size = int(size_str, 16)
+            except Exception:
+                raise ValueError("Неверный размер chunk")
+            if chunk_size == 0:
+                # Прочитать завершающий CRLF и возможные трейлеры
+                # Пропускаем все строки до пустой строки
+                # (BaseHTTPRequestHandler уже парсит заголовки, трейлеры обычно отсутствуют)
+                self.rfile.readline()  # CRLF после нулевого чанка
+                break
+            if total + chunk_size > MAX_BODY_BYTES:
+                raise ValueError(f"Тело слишком большое (> {MAX_BODY_MB} MB)")
+            chunk = self.rfile.read(chunk_size)
+            if len(chunk) != chunk_size:
+                raise ValueError("Оборванный chunk")
+            out.extend(chunk)
+            total += chunk_size
+            # закрывающий CRLF для чанка
+            crlf = self.rfile.read(2)
+            if crlf != b"\r\n":
+                raise ValueError("Неверный разделитель chunk")
+        return bytes(out)
+
+    # -------- Helpers: статика ---------
+    def _serve_public(self) -> bool:
+        path = urlparse(self.path).path
+        if path == "/":
+            super().do_GET()
+            return True
+        safe_path = self._safe_join(PUBLIC_DIR, path)
+        if safe_path and os.path.exists(safe_path):
+            super().do_GET()
+            return True
+        return False
+
+    def _safe_join(self, root: str, url_path: str):
+        # Decode percent-encodings, normalize, and prevent escaping root
+        path = unquote(url_path)
+        path = path.split("?", 1)[0].split("#", 1)[0]
+        path = posixpath.normpath(path)
+        parts = [p for p in path.strip("/").split("/") if p and p not in (".", "..")]
+        fs_path = root
+        for part in parts:
+            # keep unicode names (Cyrillic allowed)
+            fs_path = os.path.join(fs_path, part)
+        try:
+            real = os.path.realpath(fs_path)
+            if os.path.commonpath([real, os.path.realpath(root)]) != os.path.realpath(root):
+                return None
+            return real
+        except Exception:
+            return None
+
+    # Удалены функции распаковки архивов и обработка /upload
 
 def run():
     init_db()
