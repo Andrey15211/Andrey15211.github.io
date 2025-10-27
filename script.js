@@ -43,6 +43,13 @@ const projects = [
     description: "Самостоятельный сайт: Python-сервер + SQLite; ваш ПК — хост.",
   }
 ];
+// Добавлен проект викторины по персонажам Игры престолов
+projects.push({
+  name: "Угадай персонажа (Игра престолов)",
+  path: "JS_guess_from_the_picture-main/guess_pictures.html",
+  image: "JS_guess_from_the_picture-main/backgrounds/got01.jpg",
+  description: "Викторина по персонажам Игры престолов: фильтр по полу, звуки, фоновая музыка, озвучивание результата, адаптивный Bootstrap-дизайн.",
+});
 
 // Вывод карточек проектов
 window.onload = function() {
